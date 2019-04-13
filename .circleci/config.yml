@@ -33,3 +33,15 @@ jobs:
           command: npm run seed
 
       - run: npm test
+
+  deploy-app:
+    docker:
+      - image: circleci/node:8.12.0
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: npm install
+      - run:
+          name: Push to S3
+          command: sh ./.circleci/deploy.sh
