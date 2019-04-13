@@ -1,8 +1,0 @@
-option_settings:
-  aws:elbv2:listener:443:
-    DefaultProcess: default
-    ListenerEnabled: true
-
-    Protocol: HTTPS
-  aws:elasticbeanstalk:container:nodejs:
-    NodeCommand: "npm start"
