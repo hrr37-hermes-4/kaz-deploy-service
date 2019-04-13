@@ -1,7 +1,7 @@
 /* eslint-disable arrow-parens */
 /* eslint-disable class-methods-use-this */
 const AWS = require('aws-sdk');
-const config = require('./config')
+const config = require('./RDS_config')
 const s3Config = require('./s3')
 
 const db = require('./');
@@ -159,7 +159,6 @@ class DummyDataGenerator {
       const bookId = j + 1;
 
       const images = await this.listAllObjectsFromS3Bucket(s3Config.s3BucketName)
-
       const randomIndex = Math.round(Math.random())
 
       await db.insertBookImage(bookId, images[randomIndex]);
@@ -174,6 +173,7 @@ class DummyDataGenerator {
 
   // Seed 100 users
   async seedUsers() {
+    console.log('we are here')
     this.users = [];
     for (let i = 0; i < 100; i++) {
       let data = {

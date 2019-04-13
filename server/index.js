@@ -6,7 +6,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 
 const app = express();
-const PORT = 3002;
+const PORT = process.env.PORT || 3002;
 
 app.use(bodyParser.json());
 app.use(morgan('dev'));
@@ -20,11 +20,13 @@ app.all("/books/:id", async (req, res) => {
 
 app.get('/books/:id/info', async (req, res) => {
   const id = req.params.id;
+
   if (!/^\d+$/.test(id))
     return res.status(422).json();
 
   try {
     const rows = await db.getBookInfo(id);
+    console.log("Hey")
     if (rows && rows.length) {
       res.json(rows[0]);
     } else {
@@ -140,7 +142,7 @@ app.get('/books/:id/info/users/:userId/readStatus', async (req, res) => {
 
 
 app.listen(PORT, () => {
-  console.log(`listening on port ${PORT}`)
+  console.log(`listening on port ${PORT}`);
 });
 
 module.exports = app

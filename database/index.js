@@ -1,9 +1,22 @@
 const mysql = require('mysql');
 const Promise = require('bluebird');
-const mysqlConfig = require('./config.js');
+const mysqlConfig = require('./RDS_config.js/index.js.js');
+
+// const user = process.env.RDS_USERNAME || 'root';
+// const password = process.env.RDS_PASSWORD || '';
+// const port = process.env.RDS_PORT || 3306;
+// const database = process.env.RDS_DB_NAME || 'books';
+// const host = process.env.RDS_HOSTNAME || '127.0.0.1';
+
+// var connection = mysql.createConnection({
+//   user
+//   password,
+//   port,
+//   database,
+//   host,
+// });
 
 const connection = mysql.createConnection(mysqlConfig);
-// const db = Promise.promisifyAll(connection, { multiArgs: true });
 
 const query = function(query, placeholders) {
   return new Promise((resolve, reject) => {
@@ -68,7 +81,6 @@ const updateReadStatus = function(bookId, userId, status) {
 const insertReadStatus = function(bookId, userId, status) {
   return query(`INSERT INTO readStatus (status, user_id, bookInfo_id) VALUES(?,?,?)`, [status, userId, bookId]);
 };
-
 
 const getReadStatus = function(bookId, userId) {
   return query(`SELECT * FROM readStatus WHERE user_id = ${userId} AND bookInfo_id = ${bookId}`);

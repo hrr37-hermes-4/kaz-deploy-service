@@ -1,6 +1,9 @@
-node_modules
 .env
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+node_modules/@material-ui/core/umd/material-ui.development.js
+node_modules/@types/babel__core/LICENSE
+node_modules/@types/babel__core/README.md
+node_modules/@types/babel__generator/LICENSE
