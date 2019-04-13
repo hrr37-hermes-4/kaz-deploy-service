@@ -5,7 +5,7 @@
   "main": "server/index.js",
   "scripts": {
     "seed": "node database/generator.js",
-    "start": "node server/index.js",
+    "start": "npm install && node server/index.js",
     "build": "webpack --config ./webpack.config.js -p",
     "start-frontend": "webpack --config ./webpack.config.js --dev --watch",
     "start:dev": "nodemon server/index.js"
