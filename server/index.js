@@ -1,0 +1,143 @@
+const express = require('express');
+const db = require('../database/index');
+const bodyParser = require('body-parser');
+const morgan = require('morgan');
+const cors = require('cors');
+
+const app = express();
+
+app.use(bodyParser.json());
+app.use(morgan('dev'));
+app.use(cors());
+
+const staticPath = `${__dirname}/../public`;
+app.use("/books/:id", express.static(staticPath));
+
+app.get('/books/:id/info', async (req, res) => {
+  const id = req.params.id;
+
+  if (!/^\d+$/.test(id))
+    return res.status(422).json();
+
+  try {
+    const rows = await db.getBookInfo(id);
+    console.log("Hey")
+    if (rows && rows.length) {
+      res.json(rows[0]);
+    } else {
+      res.status(404).json({ error: 'no data' })
+    }
+  } catch (e) {
+    res.status(500).json({ error: e.message })
+  }
+});
+
+app.get('/books/:id/info/users', async (req, res) => {
+  let id = req.params.id;
+  try {
+    if (!/^\d+$/.test(id)) {
+      res.status(404).json()
+    } else {
+      const rows = await db.getUserInfo(id);
+      res.json(rows);
+    }
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+
+});
+
+app.get('/books/:id/info/image', async (req, res) => {
+  let id = parseInt(req.params.id);
+  if (!/^\d+$/.test(id)) {
+    return res.status(404).json();
+  }
+
+  try {
+    const rows = await db.getBookImage(id);
+    res.json(rows[0]);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.get('/books/:id/info/ratings', async (req, res) => {
+  const id = req.params.id;
+
+  if (!/^\d+$/.test(id)) {
+    return res.status(404).json();
+  }
+
+  try {
+    const rows = await db.getRatings(id);
+    res.json(rows);
+  } catch (e) {
+    res.status(500).json({ error: e.message })
+  }
+});
+
+app.get('/books/:id/info/reviews', async (req, res) => {
+  const id = req.params.id;
+
+  if (!/^\d+$/.test(id)) {
+    return res.status(404).json();
+  }
+
+  try {
+    const rows = await db.getReviews(id);
+
+    res.json(rows);
+  } catch (e) {
+    res.status(500).json({ error: e.message })
+  }
+});
+
+app.put('/books/:id/info/users/:userId/readStatus', async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  const userId = parseInt(req.params.userId, 10);
+  const { status } = req.body;
+  if (!/^\d+$/.test(id) || !/^\d+$/.test(userId)) {
+    return res.status(404).json();
+  }
+
+  try {
+    const rows = await db.getReadStatus(id, userId)
+    if (rows[0]) {
+      await db.updateReadStatus(id, userId, status);
+    } else {
+      await db.insertReadStatus(id, userId, status)
+    }
+
+    const data = await db.getReadStatus(id, userId)
+    return res.json({
+      data: data[0]
+    })
+  } catch (e) {
+    res.status(500).json({ error: e.message })
+  }
+});
+
+app.get('/books/:id/info/users/:userId/readStatus', async (req, res) => {
+  const id = req.params.id;
+  const userId = req.params.userId;
+
+  if (!/^\d+$/.test(id) || !/^\d+$/.test(userId)) {
+    return res.status(404).json();
+  }
+  try {
+    const rows = await db.getReadStatus(id, userId)
+
+    return res.json({
+      data: rows[0] || ""
+    })
+  } catch (e) {
+    res.status(500).json({ error: e.message })
+  }
+})
+
+const port = process.env.PORT || 5000;
+app.listen(port, () => {
+  console.log(`listening on port ${port}\n\n`);
+});
+
+module.exports = app

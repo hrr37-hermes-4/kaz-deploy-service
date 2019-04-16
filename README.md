@@ -1,1 +1,1 @@
-# kaz-deploy-service
+# kazshige-service
